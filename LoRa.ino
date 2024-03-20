@@ -75,6 +75,9 @@ void LoRa_services(){
       ptr = strtok(NULL, ",");
       count++;
     }
+
+    String filePath = Todayfilepath(rtc);
+    String unixtime = UnixTime(rtc);
     
     // Calculate the checksum of the received message
     float calculatedChecksum = battery + temperature + humidity + lux + soil;
@@ -95,9 +98,6 @@ void LoRa_services(){
       Serial.println(lux);
       Serial.print("Soil: ");
       Serial.println(soil);
-
-      String filePath = Todayfilepath(rtc);
-      String unixtime = UnixTime(rtc);
 
       String message = id+","+String(battery)+","+String(temperature)+","+String(humidity)+","+String(lux)+","+String(soil)+","+unixtime+"\n";
       Serial.println(message);
