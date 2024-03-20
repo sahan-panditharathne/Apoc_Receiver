@@ -118,7 +118,7 @@ void listFiles(fs::FS &fs, const char * dirname, uint8_t levels, BluetoothSerial
     }
 }
 
-void appendFile(fs::FS &fs, const char * path, String message){
+void appendFile(fs::FS &fs, String path, String message){
     Serial.printf("Appending to file: %s\n", path);
 
     File file = fs.open(path, FILE_APPEND);
