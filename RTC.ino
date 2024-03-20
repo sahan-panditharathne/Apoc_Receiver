@@ -21,3 +21,21 @@ void RTC_init(RTC_DS1307 &rtc){
   Serial.print(now.second(), DEC);
   Serial.println();
 }
+
+String Todayfilepath(RTC_DS1307 &rtc){
+  DateTime now = rtc.now();
+  String filePath = "/data/";
+  filePath += String(now.day(), DEC);
+  filePath += "-";
+  filePath += String(now.month(), DEC);
+  filePath += "-";
+  filePath += String(now.year(), DEC);
+  filePath += ".txt";
+  
+  return filePath;
+}
+
+String UnixTime(RTC_DS1307 &rtc){
+  DateTime now = rtc.now();
+  return String(now.unixtime());
+}
