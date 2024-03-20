@@ -29,15 +29,10 @@ RTC_DS1307 rtc;
 
 void setup() {
   Serial.begin(115200);
-  SerialBT.begin(device_name); //Bluetooth device name
-  Serial.printf("The device with name \"%s\" is started.\nNow you can pair it with Bluetooth!\n", device_name.c_str());
-  //Serial.printf("The device with name \"%s\" and MAC address %s is started.\nNow you can pair it with Bluetooth!\n", device_name.c_str(), SerialBT.getMacString()); // Use this after the MAC method is implemented
-  #ifdef USE_PIN
-    SerialBT.setPin(pin);
-    Serial.println("Using PIN");
-  #endif
-  
+
+  Bluetooth_init();
   MicroSD_init();
+  RTC_init();
 
 }
 
