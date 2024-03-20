@@ -10,33 +10,19 @@
 #include "BluetoothSerial.h"
 #include "RTClib.h"
 
-//#define USE_PIN // Uncomment this to use PIN during pairing. The pin is specified on the line below
-const char *pin = "1234"; // Change this to more secure PIN.
-
-String device_name = "ESP32-BT-Slave";
-
-#if !defined(CONFIG_BT_ENABLED) || !defined(CONFIG_BLUEDROID_ENABLED)
-#error Bluetooth is not enabled! Please run `make menuconfig` to and enable it
-#endif
-
-#if !defined(CONFIG_BT_SPP_ENABLED)
-#error Serial Bluetooth not available or not enabled. It is only available for the ESP32 chip.
-#endif
-
-BluetoothSerial SerialBT;
 RTC_DS1307 rtc;
-
+BluetoothSerial SerialBT;
 
 void setup() {
   Serial.begin(115200);
 
-  Bluetooth_init();
+  Bluetooth_init(SerialBT);
   MicroSD_init();
-  RTC_init();
+  RTC_init(rtc);
 
 }
 
 void loop() {
-  Bluetooth_services();
+  Bluetooth_services(SerialBT);
 }
 

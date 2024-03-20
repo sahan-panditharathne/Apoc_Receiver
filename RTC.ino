@@ -1,4 +1,4 @@
-void RTC_init(){
+void RTC_init(RTC_DS1307 &rtc){
   rtc.begin();
   if (!rtc.isrunning()) {
     Serial.println("RTC is NOT running!");
