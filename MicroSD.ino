@@ -117,3 +117,19 @@ void listFiles(fs::FS &fs, const char * dirname, uint8_t levels, BluetoothSerial
         file = root.openNextFile();
     }
 }
+
+void appendFile(fs::FS &fs, const char * path, String message){
+    Serial.printf("Appending to file: %s\n", path);
+
+    File file = fs.open(path, FILE_APPEND);
+    if(!file){
+        Serial.println("Failed to open file for appending");
+        return;
+    }
+    if(file.print(message)){
+        Serial.println("Message appended");
+    } else {
+        Serial.println("Append failed");
+    }
+    file.close();
+}
