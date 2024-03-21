@@ -24,15 +24,13 @@ void RTC_init(RTC_DS1307 &rtc){
 
 String Todayfilepath(RTC_DS1307 &rtc){
   DateTime now = rtc.now();
-  String filePath = "/data/";
-  filePath += String(now.day(), DEC);
-  filePath += "-";
-  filePath += String(now.month(), DEC);
-  filePath += "-";
-  filePath += String(now.year(), DEC);
-  filePath += ".txt";
   
-  return filePath;
+  // Format the date as DD-MM-YYYY
+  String day = (now.day() < 10) ? "0" + String(now.day()) : String(now.day());
+  String month = (now.month() < 10) ? "0" + String(now.month()) : String(now.month());
+  String year = String(now.year());
+
+  return day + "-" + month + "-" + year;
 }
 
 String UnixTime(RTC_DS1307 &rtc){
