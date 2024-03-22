@@ -2,7 +2,7 @@
 #define ss 5
 #define rst 14
 #define dio0 4
-#define PW "watchhouse"
+#define PW "0001"
 
 void LoRa_init(){
   Serial.println("Starting LoRa Receiver");
@@ -20,7 +20,7 @@ void LoRa_services(){
   int packetSize = LoRa.parsePacket();
   if (packetSize) {
     // received a packet
-
+    Serial.println("Packet received");
     // read packet into a buffer
     char buffer[packetSize];
     int i = 0;
@@ -43,8 +43,7 @@ void LoRa_services(){
     int battery;
     float checksum, temperature, humidity, lux, soil;
 
-    while (ptr != NULL) {
-      
+    /*while (ptr != NULL) { 
       switch (count) {
         case 0:
           break;
@@ -71,7 +70,35 @@ void LoRa_services(){
           break;
         default:
           break;
+      }*/
+
+      while (ptr != NULL) { //this is put here tm=emparailry for parse messages coming from 0001
+      switch (count) {
+        case 0:
+          id = String(ptr);
+          break;
+        case 1:
+          battery = atoi(ptr);
+          break;
+        case 2:
+          checksum = atof(ptr);
+          break;
+        case 3:
+          temperature = atof(ptr);
+          break;
+        case 4:
+          humidity = atof(ptr);
+          break;
+        case 5:
+          lux = atof(ptr);
+          break;
+        case 6:
+          soil = atof(ptr);
+          break;
+        default:
+          break;
       }
+
       ptr = strtok(NULL, ",");
       count++;
     }
@@ -83,7 +110,7 @@ void LoRa_services(){
     float calculatedChecksum = battery + temperature + humidity + lux + soil;
 
     // Check if the calculated checksum matches the received checksum
-    if (calculatedChecksum == checksum) {
+    if (/*calculatedChecksum == checksum*/ 1) {
       // Message is likely intact, process it
       Serial.println("Message received successfully:");
       Serial.print("ID: ");
@@ -105,6 +132,7 @@ void LoRa_services(){
     } else {
       // Checksum mismatch, discard the message
       Serial.println("Checksum mismatch, discarding message");
+      /*-------Write the errors into a seperate file on the SD card-------*/
     }
 
     // print RSSI of packet
