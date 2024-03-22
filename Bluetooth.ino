@@ -43,7 +43,7 @@ void Bluetooth_services(BluetoothSerial &SerialBT){
       // Check if the file exists
       if (SD.exists(filePath)) {
         // Read and transmit the file content over Bluetooth
-        readFileOverBluetooth(SD, filePath, SerialBT);
+        readFileOverBluetooth(SD, filePath.c_str(), SerialBT);
       } else {
         Serial.println("File not found");
         SerialBT.println("ERROR: File not found");
@@ -54,8 +54,9 @@ void Bluetooth_services(BluetoothSerial &SerialBT){
       expected command syntax LIST N
       N - number of files - integer
       */
-      int count = command.substring(5).toInt();
-      listFiles(SD, "/data", count, SerialBT);
+      //int count = command.substring(5).toInt();
+      String dirName = command.substring(5);
+      listFiles(SD, dirName.c_str(), 1, SerialBT);
 
     }else if (command.startsWith("SETTIME")) {
       /*

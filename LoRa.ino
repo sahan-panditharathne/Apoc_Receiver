@@ -103,7 +103,7 @@ void LoRa_services(){
       count++;
     }
 
-    String filePath = Todayfilepath(rtc);
+    String filePath = "/data/"+Todayfilepath(rtc)+".txt";
     String unixtime = UnixTime(rtc);
     
     // Calculate the checksum of the received message
@@ -128,7 +128,7 @@ void LoRa_services(){
 
       String message = id+","+String(battery)+","+String(temperature)+","+String(humidity)+","+String(lux)+","+String(soil)+","+unixtime+"\n";
       Serial.println(message);
-      appendFile(SD, "/data/"+ filePath +".txt", message);
+      appendFile(SD,filePath.c_str(), message);
     } else {
       // Checksum mismatch, discard the message
       Serial.println("Checksum mismatch, discarding message");
