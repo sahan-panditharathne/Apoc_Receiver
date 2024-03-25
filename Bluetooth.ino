@@ -11,8 +11,6 @@ String device_name = "ESP32-BT-Slave";
 #error Serial Bluetooth not available or not enabled. It is only available for the ESP32 chip.
 #endif
 
-
-
 void Bluetooth_init(BluetoothSerial &SerialBT){
   SerialBT.begin(device_name); //Bluetooth device name
   Serial.printf("The device with name \"%s\" is started.\nNow you can pair it with Bluetooth!\n", device_name.c_str());
@@ -50,9 +48,8 @@ void Bluetooth_services(BluetoothSerial &SerialBT){
       }
     }else if (command.startsWith("LIST")) {
       /*
-      Retrives the last N number of 
-      expected command syntax LIST N
-      N - number of files - integer
+      Retrives the list of files in a certain folder
+      expected command syntax LIST <folder name>
       */
       //int count = command.substring(5).toInt();
       String dirName = command.substring(5);
@@ -71,7 +68,7 @@ void Bluetooth_services(BluetoothSerial &SerialBT){
     } else if (command.startsWith("HELP")) {
       // Display help menu
       SerialBT.println("Available commands:");
-      SerialBT.println("  LIST - List files in the data folder");
+      SerialBT.println("  LIST <folder name> - List files in a certain folder");
       SerialBT.println("  READ <filename> - Read a file from the data folder");
       SerialBT.println("  SETTIME <timestamp> - Set the RTC time using UNIX timestamp");
       SerialBT.println("  HELP - Display this help menu");
