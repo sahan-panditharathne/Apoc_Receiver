@@ -68,8 +68,15 @@ void Bluetooth_services(BluetoothSerial &SerialBT){
       Serial.println("RTC time set");
       SerialBT.println("SUCCESS: time set!");
 
-    } else {
-        SerialBT.println("Invalid command");
+    } else if (command.startsWith("HELP")) {
+      // Display help menu
+      SerialBT.println("Available commands:");
+      SerialBT.println("  LIST - List files in the data folder");
+      SerialBT.println("  READ <filename> - Read a file from the data folder");
+      SerialBT.println("  SETTIME <timestamp> - Set the RTC time using UNIX timestamp");
+      SerialBT.println("  HELP - Display this help menu");
+    }else {
+      SerialBT.println("Invalid command");
     }
   }
   delay(20);
