@@ -13,7 +13,7 @@ void setup() {
 
   Bluetooth_init(SerialBT);
   LoRa_init();
-  MicroSD_init();
+  Flash_Init();
   RTC_init(rtc);
 
 }
