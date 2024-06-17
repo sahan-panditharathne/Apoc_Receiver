@@ -1,7 +1,7 @@
 #include "SPIFFS.h"
 
 void Flash_Init() {
-  if (!SPIFFS.begin(true)) {
+  if (!SPIFFS.begin(25)) {
     Serial.println("SPIFFS Mount Failed");
     return;
   }
