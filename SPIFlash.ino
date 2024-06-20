@@ -1,9 +1,10 @@
 #include "SPIFFS.h"
 
 void Flash_Init() {
-  if (!SPIFFS.begin(25)) {
+  while (!SPIFFS.begin(25)) {
     Serial.println("SPIFFS Mount Failed");
-    return;
+    delay(500);
+    Serial.println("Retrying.");
   }
 
   //appendFile(SPIFFS, "/data.txt","005,23,78,24589,39,892,171515341");
