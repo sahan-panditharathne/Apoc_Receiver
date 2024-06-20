@@ -1,6 +1,5 @@
 #include <SPI.h>
 #include "FS.h"
-#include "SD.h"
 #include "BluetoothSerial.h"
 #include "RTClib.h"
 #include <LoRa.h>
@@ -27,4 +26,3 @@ void loop() {
   //Bluetooth_services(SerialBT);
   BLE_Services();
 }
-
