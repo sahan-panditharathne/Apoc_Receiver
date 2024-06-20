@@ -66,12 +66,11 @@ class syncData: public BLECharacteristicCallbacks {
   bool open = 0;
 
   void onWrite(BLECharacteristic *pCharacteristic) {
-    fileName = pCharacteristic->getValue();
+    fileName = "/"+ pCharacteristic->getValue();
     Serial.println("onWrite()");
   }
 
   void onRead(BLECharacteristic *pcSync) {
-    //Serial.println("onRead()");
     // Implement the logic to send data over BLE
     if (!open) {
       dataFile = SPIFFS.open(fileName.c_str());

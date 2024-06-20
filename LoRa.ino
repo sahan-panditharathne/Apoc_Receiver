@@ -103,7 +103,7 @@ void LoRa_services(){
       count++;
     }
 
-    String filePath = "/data/"+Todayfilepath(rtc)+".txt";
+    String filePath = "/"+Todayfilepath(rtc)+".txt";
     String unixtime = UnixTime(rtc);
     
     // Calculate the checksum of the received message
@@ -136,7 +136,7 @@ void LoRa_services(){
     }
 
     // print RSSI of packet
-    Serial.print("' with RSSI ");
+    Serial.print(" with RSSI ");
     Serial.println(LoRa.packetRssi());
   }
 }

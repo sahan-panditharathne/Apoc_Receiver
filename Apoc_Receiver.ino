@@ -10,12 +10,12 @@
 #include <BLE2902.h>
 
 RTC_DS1307 rtc;
-BluetoothSerial SerialBT;
+//BluetoothSerial SerialBT;
 
 void setup() {
   Serial.begin(115200);
 
-  Bluetooth_init(SerialBT);
+  //Bluetooth_init(SerialBT);
   LoRa_init();
   Flash_Init();
   RTC_init(rtc);
@@ -24,7 +24,7 @@ void setup() {
 
 void loop() {
   LoRa_services();
-  Bluetooth_services(SerialBT);
+  //Bluetooth_services(SerialBT);
   BLE_Services();
 }
 

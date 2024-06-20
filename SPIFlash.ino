@@ -6,8 +6,9 @@ void Flash_Init() {
     return;
   }
 
+  //appendFile(SPIFFS, "/data.txt","005,23,78,24589,39,892,171515341");
   listDir(SPIFFS, "/", 0);
-  readFile(SPIFFS, "/data/samples.txt");
+  readFile(SPIFFS, "/18-06-2024.txt");
 }
 
 void listDir(fs::FS &fs, const char * dirname, uint8_t levels){
@@ -127,3 +128,4 @@ void appendFile(fs::FS &fs, const char * path, String message){
     }
     file.close();
 }
+
