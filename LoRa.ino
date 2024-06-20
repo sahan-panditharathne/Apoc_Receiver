@@ -103,7 +103,7 @@ void LoRa_services(){
       count++;
     }
 
-    String filePath = "/data/"+Todayfilepath(rtc)+".txt";
+    String filePath = "/"+Todayfilepath(rtc)+".txt";
     String unixtime = UnixTime(rtc);
     
     // Calculate the checksum of the received message
@@ -128,7 +128,7 @@ void LoRa_services(){
 
       String message = id+","+String(battery)+","+String(temperature)+","+String(humidity)+","+String(lux)+","+String(soil)+","+unixtime+"\n";
       Serial.println(message);
-      appendFile(SD,filePath.c_str(), message);
+      appendFile(SPIFFS,filePath.c_str(), message);
     } else {
       // Checksum mismatch, discard the message
       Serial.println("Checksum mismatch, discarding message");
@@ -136,7 +136,7 @@ void LoRa_services(){
     }
 
     // print RSSI of packet
-    Serial.print("' with RSSI ");
+    Serial.print(" with RSSI ");
     Serial.println(LoRa.packetRssi());
   }
 }
