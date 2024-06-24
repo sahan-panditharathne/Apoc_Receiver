@@ -20,7 +20,7 @@ void setup() {
 
   // Create FreeRTOS tasks for LoRa and BLE services
   xTaskCreate(LoRa_services, "LoRa Task", 4096, NULL, 1, NULL);
-  xTaskCreate(BLE_services, "BLE Task", 8192, NULL, 1, NULL);
+  xTaskCreate(BLE_services, "BLE Task", 16384, NULL, 1, NULL);
 }
 
 void loop() {
