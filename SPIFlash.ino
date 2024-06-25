@@ -65,55 +65,6 @@ void readFile(fs::FS &fs, const char * path){
     file.close();
 }
 
-void readFileOverBluetooth(fs::FS &fs, const char * path, BluetoothSerial &btSerial) {
-    Serial.printf("Reading file: %s\n", path);
-
-    File file = fs.open(path);
-    if (!file) {
-        Serial.println("Failed to open file for reading");
-        return;
-    }
-
-    Serial.println("Transmitting data: ");
-    while (file.available()) {
-        char data = file.read();
-        Serial.write(data);
-        btSerial.write(data);
-    }
-    file.close();
-}
-
-void listFiles(fs::FS &fs, const char * dirname, uint8_t levels, BluetoothSerial &btSerial) {
-    File root = fs.open(dirname);
-    if(!root){
-        Serial.println("Failed to open directory");
-        return;
-    }
-    if(!root.isDirectory()){
-        Serial.println("Not a directory");
-        return;
-    }
-
-    File file = root.openNextFile();
-    while(file){
-        if(file.isDirectory()){
-            Serial.print("  DIR : ");
-            Serial.println(file.name());
-            btSerial.print("DIR:");
-            btSerial.println(file.name());
-            if(levels){
-                listFiles(fs, file.path(), levels - 1, btSerial);
-            }
-        } else {
-            Serial.print("  FILE: ");
-            Serial.println(file.name());
-            btSerial.print("FILE:");
-            btSerial.println(file.name());
-        }
-        file = root.openNextFile();
-    }
-}
-
 void appendFile(fs::FS &fs, const char * path, String message){
     Serial.printf("Appending to file: %s\n", path);
 
