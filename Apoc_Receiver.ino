@@ -1,6 +1,5 @@
 #include <SPI.h>
 #include "FS.h"
-#include "BluetoothSerial.h"
 #include "RTClib.h"
 #include <LoRa.h>
 #include <BLEDevice.h>
@@ -19,8 +18,8 @@ void setup() {
   BLE_init();
 
   // Create FreeRTOS tasks for LoRa and BLE services
-  xTaskCreate(LoRa_services, "LoRa Task", 4096, NULL, 1, NULL);
-  xTaskCreate(BLE_services, "BLE Task", 16384, NULL, 1, NULL);
+  xTaskCreate(LoRa_services, "LoRa Task", 4096, NULL, 2, NULL);
+  xTaskCreate(BLE_services, "BLE Task", 8192, NULL, 1, NULL);
 }
 
 void loop() {

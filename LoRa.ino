@@ -1,6 +1,3 @@
-#include <LoRa.h>
-#include <SPIFFS.h>
-
 #define ss 5
 #define rst 14
 #define dio0 4

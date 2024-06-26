@@ -18,10 +18,12 @@ uint32_t value = 0;
 class MyServerCallbacks: public BLEServerCallbacks {
   void onConnect(BLEServer* pServer) {
     deviceConnected = true;
+    Serial.println("Device connected");
   };
 
   void onDisconnect(BLEServer* pServer) {
     deviceConnected = false;
+    Serial.println("Device disconnected");
   }
 };
 
@@ -93,7 +95,7 @@ class syncData: public BLECharacteristicCallbacks {
 };
 
 void BLE_init() {
-  BLEDevice::init("ESP32");
+  BLEDevice::init("APOC RECEIVER");
 
   pServer = BLEDevice::createServer();
   pServer->setCallbacks(new MyServerCallbacks());
