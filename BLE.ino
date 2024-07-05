@@ -55,7 +55,7 @@ class LatestDate : public BLECharacteristicCallbacks {
   }
 
   void onRead(BLECharacteristic *pcLatestDate) {
-    pcLatestDate->setValue(getLatestDate().c_str());
+    pcLatestDate->setValue(findLatestDateFile("/data").c_str());
   }
 };
 
