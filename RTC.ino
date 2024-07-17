@@ -48,6 +48,17 @@ unsigned long TodayUnixTime(RTC_DS1307 &rtc) {
   return startOfDay.unixtime();
 }
 
+String getCurrentTime24H(RTC_DS1307 &rtc) {
+  DateTime now = rtc.now();
+  
+  // Format the time as HH:MM:SS
+  String hour = (now.hour() < 10) ? "0" + String(now.hour()) : String(now.hour());
+  String minute = (now.minute() < 10) ? "0" + String(now.minute()) : String(now.minute());
+  String second = (now.second() < 10) ? "0" + String(now.second()) : String(now.second());
+
+  return hour + ":" + minute + ":" + second;
+}
+
 String UnixTime(RTC_DS1307 &rtc){
   DateTime now = rtc.now();
   return String(now.unixtime() * 1000ULL);
