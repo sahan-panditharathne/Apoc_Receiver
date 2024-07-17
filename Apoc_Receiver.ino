@@ -7,6 +7,19 @@
 #include <BLEUtils.h>
 #include <BLE2902.h>
 
+struct SensorData {
+  String netId;
+  String msgType;
+  String nodeId;
+  int sequence;
+  unsigned long timestamp;
+  float temperature;
+  float humidity;
+  float light;
+  float soil;
+  float batteryVoltage;
+};
+
 RTC_DS1307 rtc;
 
 void setup() {

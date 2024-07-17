@@ -12,11 +12,23 @@ void Flash_Init() {
   }
   
   listDir(SPIFFS, "/", 0);
-  String latestFile = findLatestDateFile("/data");
-  if (latestFile.length() > 0) {
-      Serial.print("Latest date file: ");
-      Serial.println(latestFile);
-      readFile(SPIFFS, latestFile.c_str());
+
+  Serial.println("Looking for data");
+  String latestDataFile = findLatestDateFile("/data");
+  if (latestDataFile.length() > 0) {
+      Serial.print("Latest data file: ");
+      Serial.println(latestDataFile);
+      readFile(SPIFFS, latestDataFile.c_str());
+  } else {
+      Serial.println("No files found.");
+  }
+
+  Serial.println("Looking for logs");
+  String latestLogFile = findLatestDateFile("/logs");
+  if (latestLogFile.length() > 0) {
+      Serial.print("Latest log file: ");
+      Serial.println(latestLogFile);
+      readFile(SPIFFS, latestLogFile.c_str());
   } else {
       Serial.println("No files found.");
   }
