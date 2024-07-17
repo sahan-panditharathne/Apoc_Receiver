@@ -28,32 +28,6 @@ class MyServerCallbacks: public BLEServerCallbacks {
 };
 
 class LatestDate : public BLECharacteristicCallbacks {
-  String getLatestDate() {
-    String latestDate;
-    File root = SPIFFS.open("/");
-    File file = root.openNextFile();
-
-    while (file) {
-      if (file.isDirectory()) {
-        file = root.openNextFile();
-        continue;
-      }
-
-      String fileName = file.name();
-      if (fileName.endsWith(".txt")) {
-        String fileDate = fileName.substring(0, fileName.indexOf(".txt"));
-        if (latestDate.length() == 0 || fileDate > latestDate) {
-          latestDate = fileDate;
-        }
-      }
-
-      file = root.openNextFile();
-    }
-
-    root.close();
-    return latestDate;
-  }
-
   void onRead(BLECharacteristic *pcLatestDate) {
     pcLatestDate->setValue(findLatestDateFile("/data").c_str());
   }
@@ -61,17 +35,19 @@ class LatestDate : public BLECharacteristicCallbacks {
 
 class syncData: public BLECharacteristicCallbacks {
   File dataFile;
-  String fileName = "/data.txt";
+  String fileName = findLatestDateFile("/data");
+  String filePath = "/data/"+fileName;
   bool open = 0;
 
   void onWrite(BLECharacteristic *pCharacteristic) {
     fileName = "/" + pCharacteristic->getValue();
+    filePath = "/data/"+fileName;
     Serial.println("onWrite()");
   }
 
   void onRead(BLECharacteristic *pcSync) {
     if (!open) {
-      dataFile = SPIFFS.open(fileName.c_str());
+      dataFile = SPIFFS.open(filePath.c_str());
       if (!dataFile) {
         Serial.println("Could not open file for reading!");
         pcSync->setValue("failed");
