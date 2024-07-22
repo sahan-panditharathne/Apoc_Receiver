@@ -8,9 +8,9 @@
 #include <BLE2902.h>
 
 struct SensorData {
-  String netId;
-  String msgType;
-  String nodeId;
+  char netId[10];
+  char msgType[20];
+  char nodeId[10];
   int sequence;
   unsigned long timestamp;
   float temperature;
@@ -31,7 +31,7 @@ void setup() {
   BLE_init();
 
   // Create FreeRTOS tasks for LoRa and BLE services
-  xTaskCreate(LoRa_services, "LoRa Task", 4096, NULL, 2, NULL);
+  xTaskCreate(LoRa_services, "LoRa Task", 10000, NULL, 2, NULL);
   xTaskCreate(BLE_services, "BLE Task", 8192, NULL, 1, NULL);
 }
 

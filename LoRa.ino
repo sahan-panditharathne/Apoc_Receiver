@@ -2,6 +2,8 @@
 #define rst 14
 #define dio0 4
 #define PW "0001"
+#define MAX_MESSAGE_LENGTH 256
+
 const String USER_NET_ID = "WD";
 
 void LoRa_init() {
@@ -20,18 +22,18 @@ void LoRa_services(void *pvParameters) {
     // Try to parse packet
   int packetSize = LoRa.parsePacket();
   if (packetSize) {
-    // Received a packet
+    char receivedData[MAX_MESSAGE_LENGTH] = {0};
+    int index = 0;
+
+    while (LoRa.available() && index < MAX_MESSAGE_LENGTH - 1) {
+      receivedData[index++] = (char)LoRa.read();
+    }
+    receivedData[index] = '\0';
+
     Serial.println("Received a packet");
 
-    String receivedData = "";
-    // Read packet
-    while (LoRa.available()) {
-      receivedData += (char)LoRa.read();
-    }
-
-    // Parse the received data
     SensorData parsedData;
-    if (parseSensorData(receivedData, parsedData)) {
+    if (parseSensorData(receivedData, &parsedData)) {
       Serial.println("Parsing successful! Message matches our Network ID.");
       Serial.print("Received packet '");
       Serial.print(receivedData);
@@ -61,11 +63,11 @@ void LoRa_services(void *pvParameters) {
 
       String filePath = "/data/" + TodayUnixTime(rtc);
       String unixtime = UnixTime(rtc);
-      String message = parsedData.netId + "," + parsedData.batteryVoltage + "," + parsedData.temperature + "," + parsedData.humidity + "," + parsedData.light + "," + parsedData.soil + "," + unixtime + "\n";
+      String message = String(parsedData.netId) + "," + String(parsedData.batteryVoltage) + "," + String(parsedData.temperature) + "," + String(parsedData.humidity) + "," + String(parsedData.light) + "," + String(parsedData.soil) + "," + unixtime + "\n";
 
       appendFile(SPIFFS, filePath.c_str(), message); //write to storage
 
-      writeToLogs("msg saved, nodeid:"+parsedData.nodeId+", sequence:"+parsedData.sequence+",waketime:"+parsedData.timestamp+", RSSI:"+LoRa.packetRssi());
+      writeToLogs("msg saved, nodeid:"+String(parsedData.nodeId)+", sequence:"+String(parsedData.sequence)+",waketime:"+String(parsedData.timestamp)+", RSSI:"+LoRa.packetRssi());
     } else {
       Serial.println("Parsing failed. Discarding.");
       writeToLogs("Parsing failed. Discarding.");
