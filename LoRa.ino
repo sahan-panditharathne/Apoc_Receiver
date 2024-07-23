@@ -63,9 +63,10 @@ void LoRa_services(void *pvParameters) {
 
       String filePath = "/data/" + TodayUnixTime(rtc);
       String unixtime = UnixTime(rtc);
+      Serial.println("line 66");
       String message = String(parsedData.netId) + "," + String(parsedData.batteryVoltage) + "," + String(parsedData.temperature) + "," + String(parsedData.humidity) + "," + String(parsedData.light) + "," + String(parsedData.soil) + "," + unixtime + "\n";
-
-      appendFile(SPIFFS, filePath.c_str(), message); //write to storage
+      Serial.println("line 68");
+      appendFile(SPIFFS, filePath.c_str(), message.c_str()); //write to storage
 
       writeToLogs("msg saved, nodeid:"+String(parsedData.nodeId)+", sequence:"+String(parsedData.sequence)+",waketime:"+String(parsedData.timestamp)+", RSSI:"+LoRa.packetRssi());
     } else {

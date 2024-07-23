@@ -147,7 +147,7 @@ String findOldestDateFile(const char* dirname) {
     return oldestDateFile;
 }
 
-void appendFile(fs::FS &fs, const char * path, String message){
+void appendFile(fs::FS &fs, const char * path, const char * message){
     Serial.printf("Appending to file: %s\n", path);
 
     File file = fs.open(path, FILE_APPEND);
