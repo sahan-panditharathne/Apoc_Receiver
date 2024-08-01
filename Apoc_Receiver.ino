@@ -8,16 +8,16 @@
 #include <BLE2902.h>
 
 struct SensorData {
-  char netId[10];
-  char msgType[20];
-  char nodeId[10];
-  int sequence;
+  char networkID[5];
+  char nodeID[5];
+  unsigned long sequence;
   unsigned long timestamp;
   float temperature;
   float humidity;
   float light;
-  float soil;
+  float soilMoisture;
   float batteryVoltage;
+  char checksum[5];
 };
 
 RTC_DS1307 rtc;

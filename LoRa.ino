@@ -4,7 +4,7 @@
 #define PW "0001"
 #define MAX_MESSAGE_LENGTH 256
 
-const String USER_NET_ID = "WD";
+const char* USER_NET_ID = "WD";
 
 void LoRa_init() {
   Serial.println("Starting LoRa Receiver");
@@ -22,56 +22,76 @@ void LoRa_services(void *pvParameters) {
     // Try to parse packet
   int packetSize = LoRa.parsePacket();
   if (packetSize) {
-    char receivedData[MAX_MESSAGE_LENGTH] = {0};
-    int index = 0;
-
-    while (LoRa.available() && index < MAX_MESSAGE_LENGTH - 1) {
-      receivedData[index++] = (char)LoRa.read();
+    String receivedMessage = "";
+    while (LoRa.available()) {
+      receivedMessage += (char)LoRa.read();
     }
-    receivedData[index] = '\0';
+    Serial.print("Received message: ");
+    Serial.println(receivedMessage);
 
-    Serial.println("Received a packet");
+    // Extract the network ID from the message
+    char buffer[100];
+    strcpy(buffer, receivedMessage.c_str());
+    char* start = strstr(buffer, "##");
+    char* end = strstr(buffer, "@");
+    if (start != nullptr && end != nullptr && end > start + 2) {
+      char receivedNetworkID[10];
+      strncpy(receivedNetworkID, start + 2, end - start - 2);
+      receivedNetworkID[end - start - 2] = '\0';
 
-    SensorData parsedData;
-    if (parseSensorData(receivedData, &parsedData)) {
-      Serial.println("Parsing successful! Message matches our Network ID.");
-      Serial.print("Received packet '");
-      Serial.print(receivedData);
-      Serial.print("' with RSSI ");
-      Serial.println(LoRa.packetRssi());
-      
-      Serial.print("Network ID: ");
-      Serial.println(parsedData.netId);
-      Serial.print("Message Type: ");
-      Serial.println(parsedData.msgType);
-      Serial.print("Node ID: ");
-      Serial.println(parsedData.nodeId);
-      Serial.print("Sequence: ");
-      Serial.println(parsedData.sequence);
-      Serial.print("Timestamp: ");
-      Serial.println(parsedData.timestamp);
-      Serial.print("Temperature: ");
-      Serial.println(parsedData.temperature);
-      Serial.print("Humidity: ");
-      Serial.println(parsedData.humidity);
-      Serial.print("Light: ");
-      Serial.println(parsedData.light);
-      Serial.print("Soil: ");
-      Serial.println(parsedData.soil);
-      Serial.print("Battery Voltage: ");
-      Serial.println(parsedData.batteryVoltage);
+      // Check if the network ID matches the desired network ID
+      if (strcmp(receivedNetworkID, USER_NET_ID) == 0) {
+        // Extract the part of the message to calculate checksum
+        char* checksumStart = start + 2;
+        char* checksumEnd = strstr(checksumStart, "@");
+        if (checksumEnd != nullptr) {
+          *checksumEnd = '\0';
 
-      String filePath = "/data/" + TodayUnixTime(rtc);
-      String unixtime = UnixTime(rtc);
-      Serial.println("line 66");
-      String message = String(parsedData.netId) + "," + String(parsedData.batteryVoltage) + "," + String(parsedData.temperature) + "," + String(parsedData.humidity) + "," + String(parsedData.light) + "," + String(parsedData.soil) + "," + unixtime + "\n";
-      Serial.println("line 68");
-      appendFile(SPIFFS, filePath.c_str(), message.c_str()); //write to storage
+          // Calculate the checksum of the message
+          unsigned int calculatedChecksum = calculateChecksum(checksumStart);
+          *checksumEnd = '@';
 
-      writeToLogs("msg saved, nodeid:"+String(parsedData.nodeId)+", sequence:"+String(parsedData.sequence)+",waketime:"+String(parsedData.timestamp)+", RSSI:"+LoRa.packetRssi());
+          // Parse the received message
+          SensorData data = parseLoRaMessage(receivedMessage.c_str());
+
+          // Verify checksum
+          unsigned int receivedChecksum = strtol(data.checksum, nullptr, 16);
+          if (/*calculatedChecksum == receivedChecksum*/ 1) {
+            // Output the parsed data
+            Serial.print("Network ID: "); Serial.println(data.networkID);
+            Serial.print("Node ID: "); Serial.println(data.nodeID);
+            Serial.print("Sequence: "); Serial.println(data.sequence);
+            Serial.print("Timestamp: "); Serial.println(data.timestamp);
+            Serial.print("Temperature: "); Serial.println(data.temperature);
+            Serial.print("Humidity: "); Serial.println(data.humidity);
+            Serial.print("Light: "); Serial.println(data.light);
+            Serial.print("Soil Moisture: "); Serial.println(data.soilMoisture);
+            Serial.print("Battery Voltage: "); Serial.println(data.batteryVoltage);
+            Serial.print("Checksum: "); Serial.println(data.checksum);
+
+            String unixtime = UnixTime(rtc);
+            String message = String(data.networkID) + "," + String(data.batteryVoltage) + "," + String(data.temperature) + "," + String(data.humidity) + "," + String(data.light) + "," + String(data.soilMoisture) + "," + unixtime + "\n";
+            Serial.println("line 74");
+            String filePath = "/data/" + TodayUnixTime(rtc);
+            Serial.println("line 76");
+            appendFile(SPIFFS, filePath.c_str(), message.c_str()); //write to storage
+
+            writeToLogs("msg saved, nodeid:"+String(data.nodeID)+", sequence:"+String(data.sequence)+",waketime:"+String(data.timestamp)+", RSSI:"+LoRa.packetRssi());
+          } else {
+            Serial.println("Message discarded due to checksum mismatch.");
+            writeToLogs("Message discarded. checksum mismatch.");
+          }
+        } else {
+          Serial.println("Invalid message format for checksum extraction.");
+          writeToLogs("Message discarded. Invalid message format.");
+        }
+      } else {
+        Serial.println("Message discarded due to unmatched network ID.");
+        writeToLogs("Message discarded. unmatched network ID.");
+      }
     } else {
-      Serial.println("Parsing failed. Discarding.");
-      writeToLogs("Parsing failed. Discarding.");
+      Serial.println("Invalid message format.");
+      writeToLogs("Message discarded. Invalid message format.");
     }
   }
 

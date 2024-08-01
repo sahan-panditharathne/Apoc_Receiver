@@ -1,80 +1,55 @@
-bool parseSensorData(char* dataString, SensorData* data) {
-  char* token;
-  char* rest = dataString;
+SensorData parseLoRaMessage(const char* message) {
+  SensorData data;
 
-  // Check start and end markers
-  if (strncmp(dataString, "##", 2) != 0 || dataString[strlen(dataString)-2] != '$' || dataString[strlen(dataString)-1] != '$') {
-    return false;
+  // Create temporary buffer to work with
+  char buffer[100];
+  strcpy(buffer, message);
+
+  // Remove start and end delimiters
+  char* start = strstr(buffer, "##");
+  char* end = strstr(buffer, "$$");
+  if (start == nullptr || end == nullptr) {
+    return data;  // Invalid message format
   }
+  *end = '\0';  // Null terminate the message at the end delimiter
 
-  // Remove start and end markers
-  memmove(dataString, dataString + 2, strlen(dataString) - 3);
-  dataString[strlen(dataString) - 3] = '\0';
+  // Move past the start delimiter
+  start += 2;
 
-  // Extract netId
-  token = strtok_r(rest, "@", &rest);
-  if (!token) return false;
-  strncpy(data->netId, token, sizeof(data->netId) - 1);
-  data->netId[sizeof(data->netId) - 1] = '\0';
+  // Tokenize the message using '@' as the delimiter
+  char* token = strtok(start, "@");
 
-  // Check if netId matches
-  if (strcmp(data->netId, USER_NET_ID.c_str()) != 0) {
-    return false;
+  // Extract network ID
+  strncpy(data.networkID, token, sizeof(data.networkID) - 1);
+  data.networkID[sizeof(data.networkID) - 1] = '\0';
+
+  // Move to the next token (ENVSENSOR)
+  token = strtok(nullptr, "@");
+
+  // Extract node ID, sequence number, and timestamp
+  token = strtok(nullptr, "@");
+  sscanf(token, "%[^:]:%lu:%lu", data.nodeID, &data.sequence, &data.timestamp);
+
+  // Extract sensor readings
+  token = strtok(nullptr, "@");
+  sscanf(token, "%f;%f;%f;%f", &data.temperature, &data.humidity, &data.light, &data.soilMoisture);
+
+  // Extract battery voltage
+  token = strtok(nullptr, "@");
+  data.batteryVoltage = atof(token);
+
+  // Extract checksum
+  token = strtok(nullptr, "@");
+  strncpy(data.checksum, token, sizeof(data.checksum) - 1);
+  data.checksum[sizeof(data.checksum) - 1] = '\0';
+
+  return data;
+}
+
+unsigned int calculateChecksum(const char* message) {
+  unsigned int checksum = 0;
+  while (*message) {
+    checksum += *message++;
   }
-
-  // Extract msgType
-  token = strtok_r(rest, "@", &rest);
-  if (!token) return false;
-  strncpy(data->msgType, token, sizeof(data->msgType) - 1);
-  data->msgType[sizeof(data->msgType) - 1] = '\0';
-
-  // Extract nodeInfo
-  token = strtok_r(rest, "@", &rest);
-  if (!token) return false;
-  char* nodeInfo = token;
-
-  // Parse nodeInfo
-  char* nodeInfoRest = nodeInfo;
-  token = strtok_r(nodeInfoRest, ":", &nodeInfoRest);
-  if (!token) return false;
-  strncpy(data->nodeId, token, sizeof(data->nodeId) - 1);
-  data->nodeId[sizeof(data->nodeId) - 1] = '\0';
-
-  token = strtok_r(nodeInfoRest, ":", &nodeInfoRest);
-  if (!token) return false;
-  data->sequence = atoi(token);
-
-  token = strtok_r(nodeInfoRest, ":", &nodeInfoRest);
-  if (!token) return false;
-  data->timestamp = strtoul(token, NULL, 10);
-
-  // Extract envData
-  token = strtok_r(rest, "@", &rest);
-  if (!token) return false;
-  char* envData = token;
-
-  // Parse envData
-  char* envDataRest = envData;
-  token = strtok_r(envDataRest, ";", &envDataRest);
-  if (!token) return false;
-  data->temperature = atof(token);
-
-  token = strtok_r(envDataRest, ";", &envDataRest);
-  if (!token) return false;
-  data->humidity = atof(token);
-
-  token = strtok_r(envDataRest, ";", &envDataRest);
-  if (!token) return false;
-  data->light = atof(token);
-
-  token = strtok_r(envDataRest, ";", &envDataRest);
-  if (!token) return false;
-  data->soil = atof(token);
-
-  // Extract powerData
-  token = strtok_r(rest, "@", &rest);
-  if (!token) return false;
-  data->batteryVoltage = atof(token);
-
-  return true;
+  return checksum;
 }
