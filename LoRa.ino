@@ -71,8 +71,8 @@ void LoRa_services(void *pvParameters) {
         ptr = strtok(NULL, ",");
         count++;
       }
-
-      String filePath = "/data/" + TodayUnixTime(rtc);
+      
+      String filePath = "/data/" + String(TodayUnixTime(rtc));
       String unixtime = UnixTime(rtc);
 
       float calculatedChecksum = battery + temperature + humidity + lux + soil;
