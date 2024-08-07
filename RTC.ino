@@ -4,19 +4,29 @@ void RTC_init(RTC_DS1307 &rtc) {
         return;
     }
 
-    if (!rtc.isrunning()) {
-        Serial.println("RTC is NOT running, setting time!");
-        rtc.adjust(DateTime(F(__DATE__), F(__TIME__)));
-    } else {
-        DateTime now = rtc.now();
-        DateTime compileTime = DateTime(F(__DATE__), F(__TIME__));
+    // if (!rtc.isrunning()) {
+    //     Serial.println("RTC is NOT running, setting time!");
+    //     rtc.adjust(DateTime(F(__DATE__), F(__TIME__)));
+    // } else {
+    //     DateTime now = rtc.now();
+    //     DateTime compileTime = DateTime(F(__DATE__), F(__TIME__));
         
-        // If RTC is more than 1 minute off from compile time, update it
-        if (abs((long)now.unixtime() - (long)compileTime.unixtime()) > 60) {
-            Serial.println("RTC time is significantly off, updating...");
-            rtc.adjust(compileTime);
-        }
-    }
+    //     // If RTC is more than 1 minute off from compile time, update it
+    //     if (abs((long)now.unixtime() - (long)compileTime.unixtime()) > 60) {
+    //         Serial.println("RTC time is significantly off, updating...");
+    //         rtc.adjust(compileTime);
+    //     }
+    // }
+
+    // if (rtc.lostPower()) {
+    // Serial.println("RTC lost power, let's set the time!");
+    // // When time needs to be set on a new device, or after a power loss, the
+    // // following line sets the RTC to the date & time this sketch was compiled
+    // rtc.adjust(DateTime(F(__DATE__), F(__TIME__)));
+    // // This line sets the RTC with an explicit date & time, for example to set
+    // // January 21, 2014 at 3am you would call:
+    // // rtc.adjust(DateTime(2014, 1, 21, 3, 0, 0));
+    // }
 
     DateTime now = rtc.now();
 
@@ -42,10 +52,10 @@ String Todayfilepath(RTC_DS1307 &rtc){
   return day + "-" + month + "-" + year;
 }
 
-unsigned long TodayUnixTime(RTC_DS1307 &rtc) {
+String TodayUnixTime(RTC_DS1307 &rtc) {
   DateTime now = rtc.now();
   DateTime startOfDay(now.year(), now.month(), now.day(), 0, 0, 0);
-  return startOfDay.unixtime();
+  return String(startOfDay.unixtime());
 }
 
 String getCurrentTime24H(RTC_DS1307 &rtc) {
