@@ -36,5 +36,8 @@ void setup() {
 }
 
 void loop() {
-
+  if (Serial.available()) {
+    String command = Serial.readStringUntil('\n');
+    handleCommand(command);
+  }
 }
