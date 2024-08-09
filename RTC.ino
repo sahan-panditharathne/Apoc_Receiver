@@ -30,15 +30,7 @@ void RTC_init(RTC_DS1307 &rtc) {
 
     DateTime now = rtc.now();
 
-    // Set system time
-    struct timeval tv;
-    tv.tv_sec = now.unixtime();
-    tv.tv_usec = 0;
-    settimeofday(&tv, NULL);
-    
-    Serial.printf("Current time: %04d/%02d/%02d %02d:%02d:%02d\n", 
-                  now.year(), now.month(), now.day(),
-                  now.hour(), now.minute(), now.second());
+    setSystemTime(now);
 }
 
 String Todayfilepath(RTC_DS1307 &rtc){
@@ -99,6 +91,7 @@ void setTime(String timeStr) {
   DateTime now = rtc.now();
   rtc.adjust(DateTime(now.year(), now.month(), now.day(), hour, minute, second));
   Serial.println("Time set successfully");
+
 }
 
 void setDate(String dateStr) {
@@ -109,5 +102,18 @@ void setDate(String dateStr) {
   DateTime now = rtc.now();
   rtc.adjust(DateTime(year, month, day, now.hour(), now.minute(), now.second()));
   Serial.println("Date set successfully");
+  now = rtc.now();
+  setSystemTime(now);
 }
 
+void setSystemTime(DateTime now){
+  // Set system time
+    struct timeval tv;
+    tv.tv_sec = now.unixtime();
+    tv.tv_usec = 0;
+    settimeofday(&tv, NULL);
+
+    Serial.printf("Current time: %04d/%02d/%02d %02d:%02d:%02d\n", 
+                  now.year(), now.month(), now.day(),
+                  now.hour(), now.minute(), now.second());
+}
