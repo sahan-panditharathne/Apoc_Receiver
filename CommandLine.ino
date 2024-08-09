@@ -12,6 +12,12 @@ void handleCommand(String command) {
   } else if (command.startsWith("DEL ")) {
     String directory = command.substring(4);
     deleteFile(SPIFFS, directory.c_str());
+  } else if (command.startsWith("SETTIME ")) {
+    setTime(command.substring(8));
+  } else if (command.startsWith("SETDATE ")) {
+    setDate(command.substring(8));
+  } else if (command == "DATETIME") {
+    displayDateTime();
   } else if (command == "FLASHINFO") {
     displayFlashInfo();
   } else if (command == "USAGE") {
@@ -53,8 +59,10 @@ void displayCommandCatalog() {
   Serial.println("LS          : List all files and directories in the current directory");
   Serial.println("READ <file> : Read the specified file");
   Serial.println("CD <dir>    : Change to the specified directory");
-  Serial.println("DEL <dir>   : Delete the specific file");
   Serial.println("FLASHINFO   : Show total and used capacity of SPI flash");
   Serial.println("USAGE       : Show used capacity in bytes and as a percentage");
+  Serial.println("SETTIME <HH:MM:SS> : Set the RTC time");
+  Serial.println("SETDATE <YYYY-MM-DD> : Set the RTC date");
+  Serial.println("DATETIME    : Display the current date and time");
   Serial.println("HELP        : Show this command catalog");
 }
