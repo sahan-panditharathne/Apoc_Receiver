@@ -147,6 +147,15 @@ String findOldestDateFile(const char* dirname) {
     return oldestDateFile;
 }
 
+void deleteFile(fs::FS &fs, const char *path) {
+  Serial.printf("Deleting file: %s\r\n", path);
+  if (fs.remove(path)) {
+    Serial.println("- file deleted");
+  } else {
+    Serial.println("- delete failed");
+  }
+}
+
 void appendFile(fs::FS &fs, const char * path, const char * message){
     Serial.printf("Appending to file: %s\n", path);
 
