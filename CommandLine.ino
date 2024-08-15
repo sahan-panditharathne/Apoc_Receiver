@@ -59,6 +59,7 @@ void displayCommandCatalog() {
   Serial.println("LS          : List all files and directories in the current directory");
   Serial.println("READ <file> : Read the specified file");
   Serial.println("CD <dir>    : Change to the specified directory");
+  Serial.println("DEL <file>    : Delete the specified file");
   Serial.println("FLASHINFO   : Show total and used capacity of SPI flash");
   Serial.println("USAGE       : Show used capacity in bytes and as a percentage");
   Serial.println("SETTIME <HH:MM:SS> : Set the RTC time");
