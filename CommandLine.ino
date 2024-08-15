@@ -31,7 +31,7 @@ void handleCommand(String command) {
 }
 
 void changeDirectory(String directory) {
-  // You can implement a directory handling mechanism here if needed
+  // we can implement a directory handling mechanism here if needed
   // For simplicity, let's just list files in the new directory
   listDir(SPIFFS,directory.c_str(),0);
 }
