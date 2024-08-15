@@ -7,6 +7,8 @@
 #include <BLEUtils.h>
 #include <BLE2902.h>
 
+const char* NETWORK_ID = "WD"; // Network identifier for the sensor group - MUST BE CHANGED BY USER
+
 struct SensorData {
   char networkID[5];
   char nodeID[5];
