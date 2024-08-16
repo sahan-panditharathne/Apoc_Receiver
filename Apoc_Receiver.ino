@@ -25,6 +25,9 @@ RTC_DS1307 rtc;
 void setup() {
   Serial.begin(115200);
 
+  // initialize digital pin LED_BUILTIN as an output.
+  pinMode(LED_BUILTIN, OUTPUT);
+
   LoRa_init();
   Flash_Init();
   RTC_init(rtc);
@@ -36,5 +39,17 @@ void setup() {
 }
 
 void loop() {
+  if (Serial.available()) {
+    String command = Serial.readStringUntil('\n');
+    handleCommand(command);
+  }
+}
 
+void indicateError() {
+  for (int i = 0; i < 5; i++) {
+    digitalWrite(LED_BUILTIN, HIGH);
+    delay(100);
+    digitalWrite(LED_BUILTIN, LOW);
+    delay(100);
+  }
 }

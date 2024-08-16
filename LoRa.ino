@@ -14,6 +14,7 @@ void LoRa_init() {
     Serial.println("Starting LoRa failed!");
     delay(500);
     Serial.println("Retrying.");
+    indicateError();
   }
 }
 

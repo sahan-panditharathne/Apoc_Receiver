@@ -1,7 +1,8 @@
 void RTC_init(RTC_DS1307 &rtc) {
-    if (!rtc.begin()) {
+    while(!rtc.begin()) {
         Serial.println("Couldn't find RTC");
-        return;
+        delay(500);
+        indicateError();
     }
 
     // if (!rtc.isrunning()) {

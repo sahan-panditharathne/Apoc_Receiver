@@ -9,6 +9,7 @@ void Flash_Init() {
     Serial.println("SPIFFS Mount Failed");
     delay(500);
     Serial.println("Retrying.");
+    indicateError();
   }
   
   listDir(SPIFFS, "/", 0);
