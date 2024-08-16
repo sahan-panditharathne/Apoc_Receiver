@@ -4,8 +4,6 @@
 #define PW "WD"
 #define MAX_MESSAGE_LENGTH 256
 
-const char* USER_NET_ID = "WD";
-
 void LoRa_init() {
   Serial.println("Starting LoRa Receiver");
   LoRa.setPins(ss, rst, dio0); //setup LoRa transceiver module
@@ -41,7 +39,7 @@ void LoRa_services(void *pvParameters) {
       receivedNetworkID[end - start - 2] = '\0';
 
       // Check if the network ID matches the desired network ID
-      if (strcmp(receivedNetworkID, USER_NET_ID) == 0) {
+      if (strcmp(receivedNetworkID, NETWORK_ID) == 0) {
         // Extract the part of the message to calculate checksum
         char* checksumStart = start + 2;
         char* checksumEnd = strstr(checksumStart, "@");

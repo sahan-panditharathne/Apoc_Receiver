@@ -40,9 +40,9 @@ class syncData: public BLECharacteristicCallbacks {
   bool open = 0;
 
   void onWrite(BLECharacteristic *pCharacteristic) {
-    fileName = "/" + pCharacteristic->getValue();
+    fileName = pCharacteristic->getValue();
     filePath = "/data/"+fileName;
-    Serial.println("onWrite()");
+    Serial.println("Write value: "+fileName);
   }
 
   void onRead(BLECharacteristic *pcSync) {
@@ -54,12 +54,14 @@ class syncData: public BLECharacteristicCallbacks {
         return;
       } else {
         pcSync->setValue("ok");
+        Serial.println("File opened.");
         open = 1;
       }
     } else {
       if (dataFile.available()) {
         String value = dataFile.readStringUntil('\n');
         pcSync->setValue(value.c_str());
+        Serial.println(value.c_str());
       } else {
         pcSync->setValue("end");
         dataFile.close();
