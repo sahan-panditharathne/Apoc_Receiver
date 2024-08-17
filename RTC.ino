@@ -4,33 +4,8 @@ void RTC_init(RTC_DS1307 &rtc) {
         delay(500);
         indicateError();
     }
-
-    // if (!rtc.isrunning()) {
-    //     Serial.println("RTC is NOT running, setting time!");
-    //     rtc.adjust(DateTime(F(__DATE__), F(__TIME__)));
-    // } else {
-    //     DateTime now = rtc.now();
-    //     DateTime compileTime = DateTime(F(__DATE__), F(__TIME__));
-        
-    //     // If RTC is more than 1 minute off from compile time, update it
-    //     if (abs((long)now.unixtime() - (long)compileTime.unixtime()) > 60) {
-    //         Serial.println("RTC time is significantly off, updating...");
-    //         rtc.adjust(compileTime);
-    //     }
-    // }
-
-    // if (rtc.lostPower()) {
-    // Serial.println("RTC lost power, let's set the time!");
-    // // When time needs to be set on a new device, or after a power loss, the
-    // // following line sets the RTC to the date & time this sketch was compiled
-    // rtc.adjust(DateTime(F(__DATE__), F(__TIME__)));
-    // // This line sets the RTC with an explicit date & time, for example to set
-    // // January 21, 2014 at 3am you would call:
-    // // rtc.adjust(DateTime(2014, 1, 21, 3, 0, 0));
-    // }
-
+    
     DateTime now = rtc.now();
-
     setSystemTime(now);
 }
 
