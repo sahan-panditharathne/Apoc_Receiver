@@ -1,7 +1,6 @@
 #define ss 5
 #define rst 14
 #define dio0 4
-#define PW "WD"
 #define MAX_MESSAGE_LENGTH 256
 
 void LoRa_init() {

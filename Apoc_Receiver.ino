@@ -8,6 +8,7 @@
 #include <BLE2902.h>
 
 const char* NETWORK_ID = "WD"; // Network identifier for the sensor group - MUST BE CHANGED BY USER
+#define  LOGGING 1
 
 struct SensorData {
   char networkID[5];
@@ -38,6 +39,8 @@ void setup() {
   // Create FreeRTOS tasks for LoRa and BLE services
   xTaskCreate(LoRa_services, "LoRa Task", 8192, NULL, 2, NULL);
   xTaskCreate(BLE_services, "BLE Task", 8192, NULL, 1, NULL);
+
+  writeToLogs("System booted up");
 }
 
 void loop() {
