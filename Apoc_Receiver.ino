@@ -7,8 +7,9 @@
 #include <BLEUtils.h>
 #include <BLE2902.h>
 
-const char* NETWORK_ID = "WD"; // Network identifier for the sensor group - MUST BE CHANGED BY USER
-#define  LOGGING 1
+const char* NETWORK_ID = "WD"; //Network identifier for the sensor group - MUST BE CHANGED BY USER
+#define  LOGGING 1 //Changing this to 0 will stop the system from recording logs
+#define LORA_FREQUENCY 433E6 //LoRa radio frequency in Hz (433 MHz in this case)
 
 struct SensorData {
   char networkID[5];

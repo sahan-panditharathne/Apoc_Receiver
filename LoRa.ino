@@ -7,7 +7,7 @@ void LoRa_init() {
   Serial.println("Starting LoRa Receiver");
   LoRa.setPins(ss, rst, dio0); //setup LoRa transceiver module
 
-  while (!LoRa.begin(433E6)) {
+  while (!LoRa.begin(LORA_FREQUENCY)) {
     Serial.println("Starting LoRa failed!");
     delay(500);
     Serial.println("Retrying.");
