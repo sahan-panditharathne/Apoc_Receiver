@@ -173,3 +173,20 @@ void appendFile(fs::FS &fs, const char * path, const char * message){
     file.close();
 }
 
+//expected inputs are "DATA" for data files and "LOG" for log files 
+void cyclicRecord(String fileType) {
+  size_t totalBytes = SPIFFS.totalBytes();
+  size_t usedBytes = SPIFFS.usedBytes();
+  float usedPercentage = (usedBytes * 100.0) / totalBytes;
+  if(usedPercentage > 75.0){
+    if(fileType == "DATA"){
+      String oldestDataFilePath = "/data/"+findOldestDateFile("/data");
+      deleteFile(SPIFFS, oldestDataFilePath.c_str());
+      writeToLogs("Cyclic recording deleted "+oldestDataFilePath);
+    }else if(fileType == "LOG"){
+      String oldestLogFilePath = "/logs/"+findOldestDateFile("/logs");
+      deleteFile(SPIFFS, oldestLogFilePath.c_str());
+      writeToLogs("Cyclic recording deleted "+oldestLogFilePath);
+    }
+  }
+}

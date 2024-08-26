@@ -71,8 +71,10 @@ void LoRa_services(void *pvParameters) {
             String message = String(data.nodeID) + "," + String(data.batteryVoltage) + "," + String(data.temperature) + "," + String(data.humidity) + "," + String(data.light) + "," + String(data.soilMoisture) + "," + unixtime + "\n";
             String filePath = "/data/" + TodayUnixTime(rtc);
             appendFile(SPIFFS, filePath.c_str(), message.c_str()); //write to storage
+            cyclicRecord("DATA"); //perform cyclic recording on /data directory
 
             writeToLogs("msg saved, nodeid:"+String(data.nodeID)+", sequence:"+String(data.sequence)+",waketime:"+String(data.timestamp)+", RSSI:"+LoRa.packetRssi());
+            cyclicRecord("LOG"); //perform cyclic recording on /logs directory
           } else {
             Serial.println("Message discarded due to checksum mismatch.");
             writeToLogs("Message discarded. checksum mismatch.");
